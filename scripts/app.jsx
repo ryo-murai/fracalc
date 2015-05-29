@@ -67,7 +67,7 @@ var Fraction = (function() {
   };
 
   p.minus = function(that) {
-    return new Fraction(this.numor * that.numor - that.numor * this.denom, this.denom * that.denom);
+    return new Fraction(this.numor * that.denom - that.numor * this.denom, this.denom * that.denom);
   };
 
   p.mult = function(that) {
@@ -138,18 +138,73 @@ var Rational = React.createClass({
   }
 });
 
+var Operator = React.createClass({
+  propTypes: {
+    labels: React.PropTypes.object,
+    onChanged: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      labels: {
+        plus:  "＋",
+        minus: "－",
+        mult:  "×",
+        div:   "÷"
+      },
+      onChanged: function(ope) {}
+    };
+  },
+  
+  getInitialState: function() {
+    return {
+      operator: "plus"
+    };
+  },
+
+  getOnSelected: function(ope) {
+    var elem = this;
+    return function(e) {
+      elem.setState({operator: ope});
+      elem.props.onChanged(ope);
+    };
+  },
+
+  render: function() {
+    return (
+      <div className="btn-group">
+        <button type="button" className="btn btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          {this.props.labels[this.state.operator]} <span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu" role="menu">
+          <li><a onClick={this.getOnSelected("plus")} href="#">{this.props.labels["plus"]}</a></li>
+          <li><a onClick={this.getOnSelected("minus")} href="#">{this.props.labels["minus"]}</a></li>
+          <li><a onClick={this.getOnSelected("mult")} href="#">{this.props.labels["mult"]}</a></li>
+          <li><a onClick={this.getOnSelected("div")} href="#">{this.props.labels["div"]}</a></li>
+        </ul>
+      </div>
+    );
+  }
+});
+
 var Calculator = React.createClass({
   getInitialState: function() {
     return {
-      answer: none
+      answer: none,
+      operator: "plus"
     };
+  },
+
+  onOperatorChanged: function(ope) {
+    this.setState({operator: ope});
   },
 
   onSubmit: function(e) {
     e.preventDefault();
     var lfrac = this.state.left();
     var rfrac = this.state.right();
-    this.setState({ answer: lfrac.plus(rfrac) });
+    var result = lfrac[this.state.operator](rfrac);
+    this.setState({ answer: result });
   },
 
   parserGetter: function(key, func) {
@@ -169,13 +224,13 @@ var Calculator = React.createClass({
           <Rational parserCb={this.parserGetter} target={"left"} />
         </div>
         <div className="col-md-1">
-          <button >+</button>
+          <Operator onChanged={this.onOperatorChanged} />
         </div>
         <div className="col-md-2">
           <Rational parserCb={this.parserGetter} target={"right"} />
         </div>
         <div className="col-md-1">
-          <button type="submit"> = </button>
+          <button className="btn btn-lg" type="submit"> = </button>
         </div>
       </div>
       <p className="bg-success">{this.state.answer.prettyPrint()}</p>
