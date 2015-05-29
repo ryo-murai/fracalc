@@ -118,8 +118,8 @@ var Rational = React.createClass({
 
   parse: function() {
     var num = React.findDOMNode(this.refs.num).value;
-    var denom = React.findDOMNode(this.refs.denom).value;
-    var numor = React.findDOMNode(this.refs.numor).value;
+    var denom = parseInt(React.findDOMNode(this.refs.denom).value);
+    var numor = parseInt(React.findDOMNode(this.refs.numor).value);
     return new Fraction((num*denom)+numor, denom);
   },
   
