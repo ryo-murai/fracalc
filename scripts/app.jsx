@@ -2,12 +2,14 @@
 
 var IntBox = React.createClass({
   propTypes: {
-    min: React.PropTypes.number
+    min: React.PropTypes.number,
+    required: React.PropTypes.bool
   },
 
   getDefaultProps: function() {
     return {
-      min: 0
+      min: 0,
+      required: false
     };
   },
 
@@ -25,30 +27,12 @@ var IntBox = React.createClass({
       className="input-sm col-sm-3" 
       min={this.props.min}
       step="1"
+      required={this.props.required}
       value={this.state.value} 
       onChange={this.onChangeText}
     />
   }
 });
-
-//var Rational = React.createClass({
-//  render: function() {
-//    return (
-//      <div className="row">
-//        <div className="col-sm-1">
-//          <IntBox />
-//        </div>
-//        <div className="col-sm-1">
-//          <table className="table table-condensed">
-//            <tr><td><IntBox /></td></tr>
-//            <tr><td><IntBox min={1} /></td></tr>
-//          </table>
-//        </div>
-//      </div>
-//    )
-//  }
-//});
-
 
 var Fraction = (function() {
   var gcd = function(x, y) {
@@ -124,14 +108,15 @@ var Rational = React.createClass({
   },
   
   render: function() {
+      //<table className="table table-condensed">
     return (
-      <table className="table table-condensed">
+      <table >
         <tr>
           <td className="col-sm-2" rowSpan="2"><IntBox ref="num"/></td>
-          <td className="col-sm-2" ><IntBox ref="numor"/></td>
+          <td className="col-sm-2" ><IntBox ref="numor" required={true}/></td>
         </tr>
         <tr>
-          <td className="col-sm-2" ><IntBox min={1} ref="denom"/></td>
+          <td className="col-sm-2" ><IntBox min={1} ref="denom" required={true}/></td>
         </tr>
       </table>
     )
